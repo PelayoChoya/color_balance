@@ -22,9 +22,6 @@ class ColorDetector:
         self.kernel_cl = np.ones((9,9),np.uint8)
         self.possitive_images = []
 
-    def increase_success_number(self):
-        self.number_success += 1
-
     def include_possitive_image(self,img):
         self.possitive_images.append(img)
 
@@ -67,5 +64,4 @@ class ColorDetector:
 
             #check if the color filer succeed
             if area_ev > 20000:
-                self.increase_success_number()
                 self.include_possitive_image(inImg_dir)

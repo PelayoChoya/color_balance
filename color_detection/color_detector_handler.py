@@ -16,33 +16,31 @@ class ColorDetectorHandler:
         colors = ['Red','Blue','Green']
         for color in colors:
             self.colors[color]['Instance'] = ColorDetector(color)
-            self.colors[color]['PassNumber'] = 0
             self.colors[color]['SuccessNumber'] = 0
             self.colors[color]['FailNumber'] = 0
-            self.colors[color]['SuccessfulImages'] = []
+            self.colors[color]['SucessfulImages'] = []
+            self.colors[color]['FailImages'] = []
 
-    def pass_per_color_update(self, color, number):
-        self.colors[color]['PassNumber'] = number
-
-    def success_fail_update(self, color, images):
+    def results_per_color_update(self, color, images):
         self.colors[color]['SuccessNumber'] = len(filter(lambda x: color.lower() in x, images))
         self.colors[color]['FailNumber'] = len(images) - len(filter(lambda x: color.lower() in x, images))
-    def successful_images_per_color_update(self, color, images):
-        self.colors[color]['SuccessfulImages'] = images
+
+    def images_per_color_update(self, color, images):
+        self.colors[color]['SuccessfulImages'] = filter(lambda x: color.lower() in x, images)
+        self.colors[color]['FailImages'] = filter(lambda x: color.lower() not in x, images)
 
     def results_per_color_number(self, color):
-        return [self.colors[color]['PassNumber'],
-                self.colors[color]['SuccessNumber'],
-                self.colors[color]['FailNumber']]
+        return (self.colors[color]['SuccessNumber'],
+                self.colors[color]['FailNumber'])
 
-    def successful_images_per_color_number(self,color):
-        return self.colors[color]['SuccessfulImages']
+    def images_per_color_number(self,color):
+        return (self.colors[color]['SuccessfulImages'],
+                self.colors[color]['FailImages'])
 
     def detection_process(self, color):
         for image in self.image_dataset:
             self.colors[color]['Instance'].detect_color(image)
-        self.pass_per_color_update(color, self.colors[color]['Instance'].number_success)
-        self.successful_images_per_color_update(color,
+        self.results_per_color_update(color,
+                                      self.colors[color]['Instance'].possitive_images)
+        self.images_per_color_update(color,
                                                 self.colors[color]['Instance'].possitive_images)
-        self.success_fail_update(color,
-                                 self.colors[color]['Instance'].possitive_images)
