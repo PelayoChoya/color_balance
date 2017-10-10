@@ -14,7 +14,12 @@ class ColorDetector:
         #dictionary containing a color and its threshold
         #Position 0 is the lower limit and positon 1 the upper one
         color_options = {'Blue': np.array([[102,50,50],[130,255,255]]),
-                         'Red': np.array([[0, 100, 100],[20, 255, 255]]),
+                         'Red': (np.array([[0, 100, 100],[20, 255,
+                                                          255]]),np.array([[160,
+                                                                            100,
+                                                                            100],[179,
+                                                                                  255,
+                                                                                  255]])),
                          'Green': np.array([[49,50,50],[80, 255, 255]])}
         self.color = (color, color_options[color])
         #creating image kernels for morphological operations
@@ -57,7 +62,14 @@ class ColorDetector:
         inImg_method = self.method(method,inImg_hsv)
 
         #appliying the color filter
-        mask = cv2.inRange(inImg_method,self.color[1][0], self.color[1][1])
+        if (self.color[0] == 'Red'):
+            mask1 = cv2.inRange(inImg_method,self.color[1][0][0],
+                                self.color[1][0][1])
+            mask2 = cv2.inRange(inImg_method,self.color[1][1][0],
+                                self.color[1][1][1])
+            mask = cv2.bitwise_or(mask1,mask2)
+        else:
+            mask = cv2.inRange(inImg_method,self.color[1][0], self.color[1][1])
 
         #morphological transformation
         #kernel = np.ones((7,7),np.uint8)
