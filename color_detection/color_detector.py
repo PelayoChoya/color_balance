@@ -34,13 +34,15 @@ class ColorDetector:
         }[method]
 
     def color_calibration_histogram_equalization(self, img):
+        img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         # split the image into three channels H,S,V
-        h,s,v = cv2.split(img)
+        h,s,v = cv2.split(img_hsv)
         # equalize histogram on the saturation channel
         cv2.equalizeHist(s, s)
         img_eq = cv2.merge((h,s,v))
+        img_eq_hsv = cv2.cvtColor(img_eq, cv2.COLOR_HSV2BGR)
 
-        return img_eq
+        return img_eq_hsv
 
     def empty_list(self):
         del self.possitive_images[:]
@@ -55,21 +57,22 @@ class ColorDetector:
         # color detection process
         inImg_filtered = cv2.GaussianBlur(inImg, (5,5),0)
 
-        #convertion from rgb to hsv
-        inImg_hsv = cv2.cvtColor(inImg_filtered, cv2.COLOR_BGR2HSV)
-
         # HSV saturation value equalization
-        inImg_method = self.method(method,inImg_hsv)
+        inImg_method = self.method(method,inImg_filtered)
+
+        #convertion from rgb to hsv
+        inImg_hsv = cv2.cvtColor(inImg_method, cv2.COLOR_BGR2HSV)
+
 
         #appliying the color filter
         if (self.color[0] == 'Red'):
-            mask1 = cv2.inRange(inImg_method,self.color[1][0][0],
+            mask1 = cv2.inRange(inImg_hsv,self.color[1][0][0],
                                 self.color[1][0][1])
-            mask2 = cv2.inRange(inImg_method,self.color[1][1][0],
+            mask2 = cv2.inRange(inImg_hsv,self.color[1][1][0],
                                 self.color[1][1][1])
             mask = cv2.bitwise_or(mask1,mask2)
         else:
-            mask = cv2.inRange(inImg_method,self.color[1][0], self.color[1][1])
+            mask = cv2.inRange(inImg_hsv,self.color[1][0], self.color[1][1])
 
         #morphological transformation
         #kernel = np.ones((7,7),np.uint8)

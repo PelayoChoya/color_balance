@@ -9,5 +9,5 @@ if __name__ == '__main__':
     for method in methods:
         for color in colors:
             cdh.detection_process(color, method)
-            print color, cdh.results_per_color_number(color), cdh.images_per_color_number(color)
+            print color, cdh.results_per_color_number(color)#, cdh.images_per_color_number(color)
             cdh.empty_results(color)
