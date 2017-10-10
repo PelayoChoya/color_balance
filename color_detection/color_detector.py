@@ -14,7 +14,7 @@ class ColorDetector:
         #dictionary containing a color and its threshold
         #Position 0 is the lower limit and positon 1 the upper one
         color_options = {'Blue': np.array([[102,50,50],[130,255,255]]),
-                         'Red': np.array([[169, 100, 100],[189, 255, 255]]),
+                         'Red': np.array([[0, 100, 100],[20, 255, 255]]),
                          'Green': np.array([[49,50,50],[80, 255, 255]])}
         self.color = (color, color_options[color])
         #creating image kernels for morphological operations
