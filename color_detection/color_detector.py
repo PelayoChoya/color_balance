@@ -22,10 +22,28 @@ class ColorDetector:
         self.kernel_cl = np.ones((9,9),np.uint8)
         self.possitive_images = []
 
+    def method(self, method, img):
+        return {
+            'None': img,
+            'HistogramEq': self.color_calibration_histogram_equalization(img)
+        }[method]
+
+    def color_calibration_histogram_equalization(self, img):
+        # split the image into three channels H,S,V
+        h,s,v = cv2.split(img)
+        # equalize histogram on the saturation channel
+        cv2.equalizeHist(s, s)
+        img_eq = cv2.merge((h,s,v))
+
+        return img_eq
+
+    def empty_list(self):
+        del self.possitive_images[:]
+
     def include_possitive_image(self,img):
         self.possitive_images.append(img)
 
-    def detect_color(self,inImg_dir):
+    def detect_color(self,inImg_dir,method):
 
         inImg = cv2.imread(inImg_dir)
 
@@ -35,8 +53,11 @@ class ColorDetector:
         #convertion from rgb to hsv
         inImg_hsv = cv2.cvtColor(inImg_filtered, cv2.COLOR_BGR2HSV)
 
+        # HSV saturation value equalization
+        inImg_method = self.method(method,inImg_hsv)
+
         #appliying the color filter
-        mask = cv2.inRange(inImg_filtered,self.color[1][0], self.color[1][1])
+        mask = cv2.inRange(inImg_method,self.color[1][0], self.color[1][1])
 
         #morphological transformation
         #kernel = np.ones((7,7),np.uint8)
@@ -63,5 +84,5 @@ class ColorDetector:
             cv2.bitwise_not(mask_final,mask_final)
 
             #check if the color filer succeed
-            if area_ev > 20000:
+            if area_ev > 150:
                 self.include_possitive_image(inImg_dir)

@@ -21,6 +21,13 @@ class ColorDetectorHandler:
             self.colors[color]['SucessfulImages'] = []
             self.colors[color]['FailImages'] = []
 
+    def empty_results(self, color):
+        self.colors[color]['Instance'].empty_list()
+        self.results_per_color_update(color,
+                                      self.colors[color]['Instance'].possitive_images)
+        self.images_per_color_update(color,
+                                                self.colors[color]['Instance'].possitive_images)
+
     def results_per_color_update(self, color, images):
         self.colors[color]['SuccessNumber'] = len(filter(lambda x: color.lower() in x, images))
         self.colors[color]['FailNumber'] = len(images) - len(filter(lambda x: color.lower() in x, images))
@@ -37,9 +44,9 @@ class ColorDetectorHandler:
         return (self.colors[color]['SuccessfulImages'],
                 self.colors[color]['FailImages'])
 
-    def detection_process(self, color):
+    def detection_process(self, color, method):
         for image in self.image_dataset:
-            self.colors[color]['Instance'].detect_color(image)
+            self.colors[color]['Instance'].detect_color(image, method)
         self.results_per_color_update(color,
                                       self.colors[color]['Instance'].possitive_images)
         self.images_per_color_update(color,
