@@ -31,7 +31,7 @@ class ColorDetector:
         return {
             'None': img,
             'HistogramEq': self.histogram_equalization(img),
-            'Clahe': self.clahe_equalization(img)
+            'ClaheEq': self.clahe_equalization(img)
         }[method]
 
     def histogram_equalization(self, img):
