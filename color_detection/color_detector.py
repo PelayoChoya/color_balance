@@ -5,6 +5,9 @@ import random
 import sys
 import cv2
 import numpy as np
+import Image
+import colorcorrect.algorithm as cca
+from colorcorrect.util import from_pil, to_pil
 
 class ColorDetector:
 
@@ -31,7 +34,8 @@ class ColorDetector:
         return {
             'None': img,
             'HistogramEq': self.histogram_equalization(img),
-            'ClaheEq': self.clahe_equalization(img)
+            'ClaheEq': self.clahe_equalization(img),
+            'GrayWorld': self.gray_world(img)
         }[method]
 
     def histogram_equalization(self, img):
@@ -56,6 +60,15 @@ class ColorDetector:
         img_eq_bgr = cv2.cvtColor(img_eq, cv2.COLOR_YCR_CB2BGR)
 
         return img_eq_bgr
+
+    def gray_world(self, img):
+        # convert to pil format
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img_pil = Image.fromarray(img_rgb)
+        img_gw_pil = to_pil(cca.grey_world(from_pil(img_pil)))
+        img_gw_opencv = cv2.cvtColor(np.array(img_gw_pil), cv2.COLOR_RGB2BGR)
+
+        return img_gw_opencv
 
     def empty_list(self):
         del self.possitive_images[:]
@@ -88,7 +101,6 @@ class ColorDetector:
             mask = cv2.inRange(inImg_hsv,self.color[1][0], self.color[1][1])
 
         #morphological transformation
-        #kernel = np.ones((7,7),np.uint8)
         mask_op = cv2.morphologyEx(mask, cv2.MORPH_OPEN, self.kernel_op)
         mask_op_cl = cv2.morphologyEx(mask_op, cv2.MORPH_CLOSE, self.kernel_cl)
 
