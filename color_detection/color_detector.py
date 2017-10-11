@@ -30,19 +30,32 @@ class ColorDetector:
     def method(self, method, img):
         return {
             'None': img,
-            'HistogramEq': self.color_calibration_histogram_equalization(img)
+            'HistogramEq': self.histogram_equalization(img),
+            'Clahe': self.clahe_equalization(img)
         }[method]
 
-    def color_calibration_histogram_equalization(self, img):
+    def histogram_equalization(self, img):
         img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         # split the image into three channels H,S,V
         h,s,v = cv2.split(img_hsv)
         # equalize histogram on the saturation channel
         cv2.equalizeHist(s, s)
         img_eq = cv2.merge((h,s,v))
-        img_eq_hsv = cv2.cvtColor(img_eq, cv2.COLOR_HSV2BGR)
+        img_eq_bgr = cv2.cvtColor(img_eq, cv2.COLOR_HSV2BGR)
 
-        return img_eq_hsv
+        return img_eq_bgr
+
+    def clahe_equalization(self, img):
+        img_ycrcb = cv2.cvtColor(img, cv2.COLOR_BGR2YCR_CB)
+        # split the image into three channels Y, CR, CB
+        y,cr,cb = cv2.split(img_ycrcb)
+        # create a CLAHE object
+        clahe = cv2.createCLAHE(clipLimit = 20.0, tileGridSize = (8,8))
+        clahe.apply(y,y)
+        img_eq = cv2.merge((y,cr,cb))
+        img_eq_bgr = cv2.cvtColor(img_eq, cv2.COLOR_YCR_CB2BGR)
+
+        return img_eq_bgr
 
     def empty_list(self):
         del self.possitive_images[:]
