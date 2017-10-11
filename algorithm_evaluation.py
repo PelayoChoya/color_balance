@@ -4,7 +4,9 @@ from color_detection import color_detector_handler
 
 if __name__ == '__main__':
     colors = ['Red', 'Blue', 'Green']
-    methods = ['None', 'HistogramEq', 'ClaheEq', 'GrayWorld']
+    methods = ['None', 'HistogramEq', 'ClaheEq', 'GreyWorld',
+               'Retinex', 'RetinexGreyWorld', 'Stretch', 'GreyWorldStretch',
+               'MaxWhite']
     cdh = color_detector_handler.ColorDetectorHandler('dataset')
     for method in methods:
         print method

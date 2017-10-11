@@ -35,8 +35,17 @@ class ColorDetector:
             'None': img,
             'HistogramEq': self.histogram_equalization(img),
             'ClaheEq': self.clahe_equalization(img),
-            'GrayWorld': self.gray_world(img)
+            'GreyWorld': self.grey_world(img),
+            'Retinex': self.retinex_eq(img),
+            'RetinexGreyWorld': self.retinex_gw_eq(img),
+            'Stretch': self.stretch_eq(img),
+            'GreyWorldStretch': self.gw_stretch_eq(img),
+            'MaxWhite': self.max_white_eq(img)
         }[method]
+
+    def opencv_to_pil(self,img):
+        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        return Image.fromarray(img_rgb)
 
     def histogram_equalization(self, img):
         img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
@@ -46,6 +55,7 @@ class ColorDetector:
         cv2.equalizeHist(s, s)
         img_eq = cv2.merge((h,s,v))
         img_eq_bgr = cv2.cvtColor(img_eq, cv2.COLOR_HSV2BGR)
+
 
         return img_eq_bgr
 
@@ -61,14 +71,54 @@ class ColorDetector:
 
         return img_eq_bgr
 
-    def gray_world(self, img):
+    def grey_world(self, img):
         # convert to pil format
-        img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        img_pil = Image.fromarray(img_rgb)
+        img_pil = self.opencv_to_pil(img)
         img_gw_pil = to_pil(cca.grey_world(from_pil(img_pil)))
         img_gw_opencv = cv2.cvtColor(np.array(img_gw_pil), cv2.COLOR_RGB2BGR)
 
         return img_gw_opencv
+
+    def retinex_eq(self, img):
+        # convert to pil format
+        img_pil = self.opencv_to_pil(img)
+        img_ret_pil = to_pil(cca.retinex(from_pil(img_pil)))
+        img_ret_opencv = cv2.cvtColor(np.array(img_ret_pil), cv2.COLOR_RGB2BGR)
+
+        return img_ret_opencv
+
+    def retinex_gw_eq(self, img):
+        # convert to pil format
+        img_pil = self.opencv_to_pil(img)
+        img_ret_gw_pil = to_pil(cca.retinex_with_adjust(from_pil(img_pil)))
+        img_ret_gw_opencv = cv2.cvtColor(np.array(img_ret_gw_pil), cv2.COLOR_RGB2BGR)
+
+        return img_ret_gw_opencv
+
+    def stretch_eq(self, img):
+        # convert to pil format
+        img_pil = self.opencv_to_pil(img)
+        img_stretch_pil = to_pil(cca.stretch(from_pil(img_pil)))
+        img_stretch_opencv = cv2.cvtColor(np.array(img_stretch_pil), cv2.COLOR_RGB2BGR)
+
+        return img_stretch_opencv
+
+    def gw_stretch_eq(self, img):
+        # convert to pil format
+        img_pil = self.opencv_to_pil(img)
+        img_gw_pil = to_pil(cca.grey_world(from_pil(img_pil)))
+        img_gw_stretch_pil = to_pil(cca.stretch(from_pil(img_gw_pil)))
+        img_gw_stretch_opencv = cv2.cvtColor(np.array(img_gw_stretch_pil), cv2.COLOR_RGB2BGR)
+
+        return img_gw_stretch_opencv
+
+    def max_white_eq(self, img):
+        # convert to pil format
+        img_pil = self.opencv_to_pil(img)
+        img_max_white_pil = to_pil(cca.max_white(from_pil(img_pil)))
+        img_max_white__opencv = cv2.cvtColor(np.array(img_max_white_pil), cv2.COLOR_RGB2BGR)
+
+        return img_max_white__opencv
 
     def empty_list(self):
         del self.possitive_images[:]
