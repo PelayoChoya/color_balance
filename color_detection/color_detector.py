@@ -11,7 +11,7 @@ from colorcorrect.util import from_pil, to_pil
 
 class ColorDetector:
 
-    def __init__(self, color):
+    def __init__(self, color, shape):
         self.number_success = 0
         #creating a filter
         #dictionary containing a color and its threshold
@@ -29,6 +29,7 @@ class ColorDetector:
         self.kernel_op = np.ones((3,3),np.uint8)
         self.kernel_cl = np.ones((9,9),np.uint8)
         self.possitive_images = []
+        self.shape = shape
 
     def method(self, method, img):
         return {
@@ -138,7 +139,6 @@ class ColorDetector:
 
         #convertion from rgb to hsv
         inImg_hsv = cv2.cvtColor(inImg_method, cv2.COLOR_BGR2HSV)
-
 
         #appliying the color filter
         if (self.color[0] == 'Red'):
