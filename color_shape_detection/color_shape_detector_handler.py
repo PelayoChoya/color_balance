@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
-from color_detector import ColorDetector
+from color_shape_detector import ColorShapeDetector
 import glob
 import collections
 
-class ColorDetectorHandler:
+class ColorShapeDetectorHandler:
 
     def __init__(self, path_to_dataset_dir):
         # list containing all the images in the dataset directory
@@ -19,7 +19,7 @@ class ColorDetectorHandler:
 
         for color in color_options:
             for shape in shape_options:
-                self.detection[color][shape]=({'Instance': ColorDetector(color,shape)})
+                self.detection[color][shape]=({'Instance': ColorShapeDetector(color,shape)})
                 self.detection[color][shape].update({'ColorSuccessNumber' : 0})
                 self.detection[color][shape].update({'ColorFailNumber' : 0})
                 self.detection[color][shape].update({'ColorSucessfulImages' :

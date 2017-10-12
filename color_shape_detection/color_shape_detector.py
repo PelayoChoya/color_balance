@@ -9,7 +9,7 @@ import Image
 import colorcorrect.algorithm as cca
 from colorcorrect.util import from_pil, to_pil
 
-class ColorDetector:
+class ColorShapeDetector:
 
     def __init__(self, color, shape):
         self.number_success = 0

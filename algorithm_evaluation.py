@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from color_detection import color_detector_handler
+from color_shape_detection import color_shape_detector_handler
 
 if __name__ == '__main__':
     colors = ['Red', 'Blue', 'Green']
@@ -8,7 +8,7 @@ if __name__ == '__main__':
     methods = ['None', 'HistogramEq', 'ClaheEq', 'GreyWorld',
                'Retinex', 'RetinexGreyWorld', 'Stretch', 'GreyWorldStretch',
                'MaxWhite']
-    cdh = color_detector_handler.ColorDetectorHandler('dataset')
+    cdh = color_shape_detector_handler.ColorShapeDetectorHandler('dataset')
 
     for method in methods:
         print method
