@@ -16,5 +16,7 @@ if __name__ == '__main__':
             print "\t", shape
             for color in colors:
                 cdh.detection_process(color, shape, method)
-                print "\t\t", color, cdh.results_per_color_number(color, shape)#, cdh.images_per_color_number(color)
+                print "\t\t", color, cdh.results_per_color_number(color,
+                                                                  shape), \
+                    cdh.results_per_shape_number(color, shape)#, cdh.images_per_color_number(color)
                 cdh.empty_results(color,shape)

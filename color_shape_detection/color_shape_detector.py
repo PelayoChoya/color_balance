@@ -25,11 +25,13 @@ class ColorShapeDetector:
                                                                                   255]])),
                          'Green': np.array([[49,50,50],[80, 255, 255]])}
         self.color = (color, color_options[color])
+        shape_options = {'Triangle' : 3, 'Square' : 4, 'Circle' : 15}
+        self.shape = (shape, shape_options[shape])
         #creating image kernels for morphological operations
         self.kernel_op = np.ones((3,3),np.uint8)
         self.kernel_cl = np.ones((9,9),np.uint8)
-        self.possitive_images = []
-        self.shape = shape
+        self.possitive_color_images = []
+        self.possitive_shape_images = []
 
     def method(self, method, img):
         return {
@@ -122,12 +124,16 @@ class ColorShapeDetector:
         return img_max_white__opencv
 
     def empty_list(self):
-        del self.possitive_images[:]
+        del self.possitive_color_images[:]
+        del self.possitive_shape_images[:]
 
-    def include_possitive_image(self,img):
-        self.possitive_images.append(img)
+    def include_possitive_color_image(self,img):
+        self.possitive_color_images.append(img)
 
-    def detect_color(self,inImg_dir,method):
+    def include_possitive_shape_image(self,img):
+        self.possitive_shape_images.append(img)
+
+    def detect_color_shape(self, inImg_dir, method):
 
         inImg = cv2.imread(inImg_dir)
 
@@ -173,6 +179,14 @@ class ColorShapeDetector:
             cv2.drawContours(mask_final, [cnt], -1, 0, -1)
             cv2.bitwise_not(mask_final,mask_final)
 
-            #check if the color filer succeed
+            #check if the color filter succeed
             if area_ev > 150:
-                self.include_possitive_image(inImg_dir)
+                self.include_possitive_color_image(inImg_dir)
+                #appliying the shape filter
+                if(self.shape[0] == 'Circle') :
+                    circles = cv2.HoughCircles(mask_final,cv2.cv.CV_HOUGH_GRADIENT,1,20,param1=50,param2=30,minRadius=35,maxRadius=0)
+                    if circles is not None:
+                        self.include_possitive_shape_image(inImg_dir)
+                else:
+                    if len(cv2.approxPolyDP(cnt,0.01*cv2.arcLength(cnt,True),True)) == self.shape[1]:
+                        self.include_possitive_shape_image(inImg_dir)
