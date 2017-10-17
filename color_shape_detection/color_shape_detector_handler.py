@@ -80,7 +80,7 @@ class ColorShapeDetectorHandler:
         return (self.detection[color][shape]['ColorSuccessNumber'],
                 self.detection[color][shape]['ColorFailNumber'])
 
-    def images_per_color_number(self,color, shape):
+    def images_per_color(self,color, shape):
         return (self.detection[color][shape]['ColorSuccessfulImages'],
                 self.detection[color][shape]['ColorFailImages'])
 
@@ -88,7 +88,7 @@ class ColorShapeDetectorHandler:
         return (self.detection[color][shape]['ShapeSuccessNumber'],
                 self.detection[color][shape]['ShapeFailNumber'])
 
-    def images_per_shape_number(self,color, shape):
+    def images_per_shape(self,color, shape):
         return (self.detection[color][shape]['ShapeSuccessfulImages'],
                 self.detection[color][shape]['ShapeFailImages'])
 
