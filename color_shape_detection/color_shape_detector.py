@@ -32,6 +32,7 @@ class ColorShapeDetector:
         self.kernel_cl = np.ones((9,9),np.uint8)
         self.possitive_color_images = []
         self.possitive_shape_images = []
+        self.results_statistics = []
 
     def method(self, method, img):
         return {
@@ -133,6 +134,10 @@ class ColorShapeDetector:
     def include_possitive_shape_image(self,img):
         self.possitive_shape_images.append(img)
 
+    def include_results_statistics (self, img_no_method, img_method):
+        self.results_statistics.append((cv2.meanStdDev(img_no_method),
+                                                      cv2.meanStdDev(img_method)))
+
     def detect_color_shape(self, inImg_dir, method):
 
         inImg = cv2.imread(inImg_dir)
@@ -142,6 +147,9 @@ class ColorShapeDetector:
 
         # HSV saturation value equalization
         inImg_method = self.method(method,inImg_filtered)
+
+        # Calculate the statistics from both images
+        self.include_results_statistics(inImg_filtered, inImg_method)
 
         #convertion from rgb to hsv
         inImg_hsv = cv2.cvtColor(inImg_method, cv2.COLOR_BGR2HSV)

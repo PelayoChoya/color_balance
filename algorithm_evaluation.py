@@ -32,8 +32,9 @@ if __name__ == '__main__':
                 results_shape = cdh.results_per_shape_number(color,
                                                               shape)
                 print "\t\t", color,results_color, results_shape
-                #print results[iterator]
-                # results[iterator].results(color, shape, results_color,
+                # print "Mean and Std Dev", cdh.results_statistics(color, shape)
+                # print results[iterator]
+                #  results[iterator].results(color, shape, results_color,
                 #                           results_shape)
                 cdh.empty_results(color,shape)
         iterator += 1
