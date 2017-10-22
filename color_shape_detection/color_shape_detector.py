@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import rospy
 import random
 import sys
 import cv2
