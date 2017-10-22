@@ -19,16 +19,17 @@ if __name__ == '__main__':
     results = []
     for method in methods:
         print method
-        file_path = os.path.dirname(os.path.abspath(__file__)) + "/results/" + method + "/" + "results.txt"
+        file_path = os.path.dirname(os.path.abspath(__file__)) + "/results/" + method+ "/"
+
         # create results parent directory
         create_directory(file_path)
-        text_file = open(file_path, "w")
+        text_file = open(file_path + "results.txt" , "w")
         text_file.write("\nOriginal Image(Mean(1x3),StdDev(1x3)), Preprocessed Image(Mean(1x3),StdDev(1x3))\n")
         for shape in shapes:
         #     print "\t", shape
             for color in colors:
                 text_file.write("\n" + shape + "," + color + "\n")
-                cdh.detection_process(color, shape, method)
+                cdh.detection_process(color, shape, method, file_path)
         #         results_color = cdh.results_per_color_number(color,
         #                                                       shape)
         #         results_shape = cdh.results_per_shape_number(color,

@@ -101,9 +101,10 @@ class ColorShapeDetectorHandler:
     def results_statistics(self, color, shape):
         return self.detection[color][shape]['Statistics']
 
-    def detection_process(self, color, shape, method):
+    def detection_process(self, color, shape, method, path_to_save):
         for image in self.image_dataset:
-            self.detection[color][shape]['Instance'].detect_color_shape(image, method)
+            self.detection[color][shape]['Instance'].detect_color_shape(image,
+                                                                        method,path_to_save)
         self.update_results(color, shape,
                                       self.detection[color][shape]['Instance'].possitive_color_images,
                                         self.detection[color][shape]['Instance'].possitive_shape_images)

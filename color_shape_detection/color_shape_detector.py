@@ -7,6 +7,7 @@ import numpy as np
 import Image
 import colorcorrect.algorithm as cca
 from colorcorrect.util import from_pil, to_pil
+from matplotlib import pyplot as plt
 
 class ColorShapeDetector:
 
@@ -45,6 +46,36 @@ class ColorShapeDetector:
             'GreyWorldStretch': self.gw_stretch_eq(img),
             'MaxWhite': self.max_white_eq(img)
         }[method]
+
+    def save_histograms_and_processed_image(self, original_image,
+                                            processed_image, image_name,
+                                            path_to_save):
+        # saving modified image
+        cv2.imwrite(path_to_save + image_name, processed_image)
+
+        # compute rgb histogram and save it
+        color = ('b', 'g', 'r')
+        fig = plt.figure(1)
+        fig.text(0.5, 0.04, 'pixel value', ha='center')
+        fig.text(0.04, 0.5, 'number of pixels', va='center', rotation='vertical')
+        for i, col in enumerate(color):
+            histr_original = cv2.calcHist([original_image],[i],None,[256],[0,256])
+            histr_processed = cv2.calcHist([processed_image],[i],None,[256],[0,256])
+            plt.subplot(212)
+            plt.plot(histr_processed,color = col)
+            plt.xlim([0,256])
+            plt.title("processed image histogram")
+            plt.subplot(211)
+            plt.plot(histr_original,color = col)
+            plt.xlim([0,256])
+            plt.title("original image histogram")
+        # Disable plot 211 x axis ticks labeling
+        plt.tick_params(
+            axis='x',          # changes apply to the x-axis
+            which='both',      # both major and minor ticks are affected
+            labelbottom='off')
+        plt.savefig(path_to_save + "histograms" + image_name)
+        plt.close()
 
     def opencv_to_pil(self,img):
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -137,10 +168,11 @@ class ColorShapeDetector:
         self.results_statistics.append((cv2.meanStdDev(img_no_method),
                                                       cv2.meanStdDev(img_method)))
 
-    def detect_color_shape(self, inImg_dir, method):
+    def detect_color_shape(self, inImg_dir, method, path_to_save):
 
         inImg = cv2.imread(inImg_dir)
-
+        image_name = inImg_dir.strip('dataset/')
+        # print image_name
         # color detection process
         inImg_filtered = cv2.GaussianBlur(inImg, (5,5),0)
 
@@ -149,6 +181,10 @@ class ColorShapeDetector:
 
         # Calculate the statistics from both images
         self.include_results_statistics(inImg_filtered, inImg_method)
+
+        #saving the image histogram and the processed image
+        self.save_histograms_and_processed_image(inImg_filtered, inImg_method,
+                                                image_name, path_to_save)
 
         #convertion from rgb to hsv
         inImg_hsv = cv2.cvtColor(inImg_method, cv2.COLOR_BGR2HSV)
