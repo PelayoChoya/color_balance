@@ -74,11 +74,12 @@ class ColorShapeDetector:
             axis='x',          # changes apply to the x-axis
             which='both',      # both major and minor ticks are affected
             labelbottom='off')
-        plt.savefig(path_to_save + "histograms" + image_name)
+        plt.savefig(path_to_save + "histogram_" + image_name)
         plt.close()
 
     def opencv_to_pil(self,img):
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
         return Image.fromarray(img_rgb)
 
     def histogram_equalization(self, img):
@@ -89,7 +90,6 @@ class ColorShapeDetector:
         cv2.equalizeHist(s, s)
         img_eq = cv2.merge((h,s,v))
         img_eq_bgr = cv2.cvtColor(img_eq, cv2.COLOR_HSV2BGR)
-
 
         return img_eq_bgr
 
@@ -157,6 +157,7 @@ class ColorShapeDetector:
     def empty_list(self):
         del self.possitive_color_images[:]
         del self.possitive_shape_images[:]
+        del self.results_statistics[:]
 
     def include_possitive_color_image(self,img):
         self.possitive_color_images.append(img)
@@ -168,7 +169,8 @@ class ColorShapeDetector:
         self.results_statistics.append((cv2.meanStdDev(img_no_method),
                                                       cv2.meanStdDev(img_method)))
 
-    def detect_color_shape(self, inImg_dir, method, path_to_save):
+    def detect_color_shape(self, inImg_dir, method, path_to_save, get_results =
+                         0 ):
 
         inImg = cv2.imread(inImg_dir)
         image_name = inImg_dir.strip('dataset/')
@@ -179,11 +181,12 @@ class ColorShapeDetector:
         # HSV saturation value equalization
         inImg_method = self.method(method,inImg_filtered)
 
-        # Calculate the statistics from both images
-        self.include_results_statistics(inImg_filtered, inImg_method)
+        if get_results == 1:
+            # Calculate the statistics from both images
+            self.include_results_statistics(inImg_filtered, inImg_method)
 
-        #saving the image histogram and the processed image
-        self.save_histograms_and_processed_image(inImg_filtered, inImg_method,
+            #saving the image histogram and the processed image
+            self.save_histograms_and_processed_image(inImg_filtered, inImg_method,
                                                 image_name, path_to_save)
 
         #convertion from rgb to hsv
