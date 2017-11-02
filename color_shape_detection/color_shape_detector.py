@@ -28,8 +28,8 @@ class ColorShapeDetector:
         shape_options = {'Triangle' : 3, 'Square' : 4, 'Circle' : 15}
         self.shape = (shape, shape_options[shape])
         #creating image kernels for morphological operations
-        self.kernel_op = np.ones((3,3),np.uint8)
-        self.kernel_cl = np.ones((9,9),np.uint8)
+        self.kernel_op = np.ones((2,2),np.uint8)
+        self.kernel_cl = np.ones((5,5),np.uint8)
         self.possitive_color_images = []
         self.possitive_shape_images = []
         self.results_statistics = []
@@ -176,7 +176,7 @@ class ColorShapeDetector:
         image_name = inImg_dir.strip('dataset/')
         # print image_name
         # color detection process
-        inImg_filtered = cv2.GaussianBlur(inImg, (5,5),0)
+        inImg_filtered = cv2.GaussianBlur(inImg, (3,3),0)
 
         # HSV saturation value equalization
         inImg_method = self.method(method,inImg_filtered)
@@ -226,11 +226,11 @@ class ColorShapeDetector:
             cv2.bitwise_not(mask_final,mask_final)
 
             #check if the color filter succeed
-            if area_ev > 150:
+            if area_ev > 75:
                 self.include_possitive_color_image(inImg_dir)
                 #appliying the shape filter
                 if(self.shape[0] == 'Circle') :
-                    circles = cv2.HoughCircles(mask_final,cv2.cv.CV_HOUGH_GRADIENT,1,5,param1=20,param2=10,minRadius=5,maxRadius=0)
+                    circles = cv2.HoughCircles(mask_final,cv2.cv.CV_HOUGH_GRADIENT,1,15,param1=35,param2=15,minRadius=10,maxRadius=0)
                     if circles is not None:
                         self.include_possitive_shape_image(inImg_dir)
                 else:
