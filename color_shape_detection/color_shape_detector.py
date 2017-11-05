@@ -76,7 +76,7 @@ class ColorShapeDetector:
         # equalize histogram on the saturation channel
         cv2.equalizeHist(y,y)
         img_eq = cv2.merge((y,cr,cb))
-        img_eq_bgr = cv2.cvtColor(img_eq, cv2.COLOR_HSV2BGR)
+        img_eq_bgr = cv2.cvtColor(img_eq, cv2.COLOR_YCR_CB2BGR)
 
         return img_eq_bgr
 
