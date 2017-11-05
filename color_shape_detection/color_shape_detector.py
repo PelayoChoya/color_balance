@@ -230,7 +230,7 @@ class ColorShapeDetector:
                 self.include_possitive_color_image(inImg_dir)
                 #appliying the shape filter
                 if(self.shape[0] == 'Circle') :
-                    circles = cv2.HoughCircles(mask_final,cv2.cv.CV_HOUGH_GRADIENT,1,15,param1=35,param2=15,minRadius=10,maxRadius=0)
+                    circles = cv2.HoughCircles(mask_final,cv2.cv.CV_HOUGH_GRADIENT,1,5,param1=20,param2=10,minRadius=5,maxRadius=0)
                     if circles is not None:
                         self.include_possitive_shape_image(inImg_dir)
                 else:
