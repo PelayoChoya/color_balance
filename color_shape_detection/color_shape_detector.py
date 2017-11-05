@@ -165,9 +165,8 @@ class ColorShapeDetector:
     def include_possitive_shape_image(self,img):
         self.possitive_shape_images.append(img)
 
-    def include_results_statistics (self, img_no_method, img_method):
-        self.results_statistics.append((cv2.meanStdDev(img_no_method),
-                                                      cv2.meanStdDev(img_method)))
+    def include_results_statistics (self, img_method):
+        self.results_statistics.append(cv2.meanStdDev(img_method))
 
     def detect_color_shape(self, inImg_dir, method, path_to_save, get_results =
                          0 ):
@@ -182,8 +181,8 @@ class ColorShapeDetector:
         inImg_method = self.method(method,inImg_filtered)
 
         if get_results == 1:
-            # Calculate the statistics from both images
-            self.include_results_statistics(inImg_filtered, inImg_method)
+            # Calculate the statistics of the preprocessed image
+            self.include_results_statistics(inImg_method)
 
             #saving the image histogram and the processed image
             self.save_histograms_and_processed_image(inImg_filtered, inImg_method,
