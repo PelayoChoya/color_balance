@@ -47,33 +47,20 @@ class ColorShapeDetector:
             'MaxWhite': self.max_white_eq(img)
         }[method]
 
-    def save_histograms_and_processed_image(self, original_image,
-                                            processed_image, image_name,
-                                            path_to_save):
+    def save_histograms_and_processed_image(self, processed_image,
+                                             image_name, path_to_save, method):
         # saving modified image
         cv2.imwrite(path_to_save + image_name, processed_image)
-
         # compute rgb histogram and save it
         color = ('b', 'g', 'r')
         fig = plt.figure(1)
         fig.text(0.5, 0.04, 'pixel value', ha='center')
         fig.text(0.04, 0.5, 'number of pixels', va='center', rotation='vertical')
         for i, col in enumerate(color):
-            histr_original = cv2.calcHist([original_image],[i],None,[256],[0,256])
             histr_processed = cv2.calcHist([processed_image],[i],None,[256],[0,256])
-            plt.subplot(212)
             plt.plot(histr_processed,color = col)
             plt.xlim([0,256])
-            plt.title("processed image histogram")
-            plt.subplot(211)
-            plt.plot(histr_original,color = col)
-            plt.xlim([0,256])
-            plt.title("original image histogram")
-        # Disable plot 211 x axis ticks labeling
-        plt.tick_params(
-            axis='x',          # changes apply to the x-axis
-            which='both',      # both major and minor ticks are affected
-            labelbottom='off')
+            plt.title(method)
         plt.savefig(path_to_save + "histogram_" + image_name)
         plt.close()
 
@@ -184,9 +171,9 @@ class ColorShapeDetector:
             # Calculate the statistics of the preprocessed image
             self.include_results_statistics(inImg_method)
 
-            #saving the image histogram and the processed image
-            self.save_histograms_and_processed_image(inImg_filtered, inImg_method,
-                                                image_name, path_to_save)
+            #saving the processed image histogram
+            self.save_histograms_and_processed_image(inImg_method, image_name,
+                                                     path_to_save, method)
 
         #convertion from rgb to hsv
         inImg_hsv = cv2.cvtColor(inImg_method, cv2.COLOR_BGR2HSV)
