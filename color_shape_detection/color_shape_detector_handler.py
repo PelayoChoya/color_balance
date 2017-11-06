@@ -53,11 +53,13 @@ class ColorShapeDetectorHandler:
             len(filter(lambda x: color.lower() in x, images_color))
         self.detection[color][shape]['ShapeSuccessNumber'] = len(filter(lambda
                                                                         x:
+                                                                        color.lower()
+                                                                        + '_' +
                                                                         shape.lower()
                                                                         in x,
                                                                         images_shape))
         self.detection[color][shape]['ShapeFailNumber'] = len(images_shape) - \
-            len(filter(lambda x: shape.lower() in x, images_shape))
+            len(filter(lambda x: color.lower() + '_' + shape.lower() in x, images_shape))
 
     def update_image_list_results(self, color, shape, images_color,
                                   images_shape):
@@ -72,10 +74,14 @@ class ColorShapeDetectorHandler:
                                                                  images_color)
         self.detection[color][shape]['ShapeSuccessfulImages'] = filter(lambda
                                                                        x:
-                                                                       shape.lower()
+                                                                       color.lower()
+                                                                       + '_' +
+                                                                        shape.lower()
                                                                        in x,
                                                                        images_shape)
         self.detection[color][shape]['ShapeFailImages'] = filter(lambda x:
+                                                                 color.lower()
+                                                                 + '_' +
                                                                  shape.lower()
                                                                  not in x,
                                                                  images_shape)
