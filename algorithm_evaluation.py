@@ -22,8 +22,9 @@ def write_statistics(file_path, stats):
         text_file.write("Image after algorithm (Mean(1x3),StdDev(1x3))\n")
         text_file.write("\n")
         for stat in stats:
+            complete = np.concatenate((np.reshape(stat[0],(1,3)),np.reshape(stat[1],(1,3))), axis = 1)
             with open(file_path + "statistics.txt" , "a") as text_file:
-                np.savetxt(text_file, stat,'%-7.4f')
+                np.savetxt(text_file, complete,'%-7.4f')
 
 if __name__ == '__main__':
     colors = ['Red', 'Blue', 'Green']
