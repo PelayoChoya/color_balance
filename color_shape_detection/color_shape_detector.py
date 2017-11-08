@@ -152,8 +152,8 @@ class ColorShapeDetector:
     def include_possitive_shape_image(self,img):
         self.possitive_shape_images.append(img)
 
-    def include_results_statistics (self, img_method):
-        self.results_statistics.append(cv2.meanStdDev(img_method))
+    def include_results_statistics (self, img_to_stat):
+        self.results_statistics.append(cv2.meanStdDev(img_to_stat))
 
     def detect_color_shape(self, inImg_dir, method, path_to_save, get_results =
                          0 ):
@@ -167,17 +167,16 @@ class ColorShapeDetector:
         # HSV saturation value equalization
         inImg_method = self.method(method,inImg_filtered)
 
+        #convertion from rgb to hsv
+        inImg_hsv = cv2.cvtColor(inImg_method, cv2.COLOR_BGR2HSV)
+
         if get_results == 1:
             # Calculate the statistics of the preprocessed image
-            self.include_results_statistics(inImg_method)
+            self.include_results_statistics(inImg_hsv)
 
             #saving the processed image histogram
             self.save_histograms_and_processed_image(inImg_method, image_name,
                                                      path_to_save, method)
-
-        #convertion from rgb to hsv
-        inImg_hsv = cv2.cvtColor(inImg_method, cv2.COLOR_BGR2HSV)
-
         #appliying the color filter
         if (self.color[0] == 'Red'):
             mask1 = cv2.inRange(inImg_hsv,self.color[1][0][0],
