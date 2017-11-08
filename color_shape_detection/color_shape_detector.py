@@ -32,7 +32,7 @@ class ColorShapeDetector:
         self.kernel_cl = np.ones((5,5),np.uint8)
         self.possitive_color_images = []
         self.possitive_shape_images = []
-        self.results_statistics = []
+        self.results_statistics = {'Blue' : [], 'Red':[], 'Green':[]}
 
     def method(self, method, img):
         return {
@@ -144,7 +144,8 @@ class ColorShapeDetector:
     def empty_list(self):
         del self.possitive_color_images[:]
         del self.possitive_shape_images[:]
-        del self.results_statistics[:]
+        for key in self.results_statistics:
+            del self.results_statistics[key][:]
 
     def include_possitive_color_image(self,img):
         self.possitive_color_images.append(img)
@@ -152,8 +153,13 @@ class ColorShapeDetector:
     def include_possitive_shape_image(self,img):
         self.possitive_shape_images.append(img)
 
-    def include_results_statistics (self, img_to_stat):
-        self.results_statistics.append(cv2.meanStdDev(img_to_stat))
+    def include_results_statistics (self, img_to_stat,image_name):
+        if 'red' in image_name:
+            self.results_statistics['Red'].append(cv2.meanStdDev(img_to_stat))
+        elif 'blue' in image_name:
+            self.results_statistics['Blue'].append(cv2.meanStdDev(img_to_stat))
+        elif 'green' in image_name:
+            self.results_statistics['Green'].append(cv2.meanStdDev(img_to_stat))
 
     def detect_color_shape(self, inImg_dir, method, path_to_save, get_results =
                          0 ):
@@ -172,7 +178,7 @@ class ColorShapeDetector:
 
         if get_results == 1:
             # Calculate the statistics of the preprocessed image
-            self.include_results_statistics(inImg_hsv)
+            self.include_results_statistics(inImg_hsv, image_name)
 
             #saving the processed image histogram
             self.save_histograms_and_processed_image(inImg_method, image_name,

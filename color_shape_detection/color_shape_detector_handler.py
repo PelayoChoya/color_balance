@@ -30,7 +30,8 @@ class ColorShapeDetectorHandler:
                 self.detection[color][shape].update({'ShapeSucessfulImages' :
                                                 []})
                 self.detection[color][shape].update({'ShapeFailImages' : []})
-                self.detection[color][shape].update({'Statistics' : []})
+
+        self.statistics = []
 
     def empty_results(self, color, shape):
         self.detection[color][shape]['Instance'].empty_list()
@@ -86,7 +87,7 @@ class ColorShapeDetectorHandler:
                                                                  not in x,
                                                                  images_shape)
     def update_statistics_results(self,color, shape, stats):
-        self.detection[color][shape]['Statistics'] = stats
+        self.statistics = stats
 
     def results_per_color_number(self, color, shape):
         return (self.detection[color][shape]['ColorSuccessNumber'],
@@ -105,7 +106,7 @@ class ColorShapeDetectorHandler:
                 self.detection[color][shape]['ShapeFailImages'])
 
     def results_statistics(self, color, shape):
-        return self.detection[color][shape]['Statistics']
+        return self.statistics
 
     def detection_process(self, color, shape, method, path_to_save, get_results
                         =0):

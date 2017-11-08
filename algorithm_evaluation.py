@@ -17,14 +17,15 @@ def write_results(file_path, shape, color, results_color, results_shape):
         results_file.write("\n")
 
 def write_statistics(file_path, stats):
-    with open(file_path + "statistics.txt" , "w") as text_file:
-        text_file = open(file_path + "statistics.txt" , "w")
-        text_file.write("Image after algorithm (Mean(1x3),StdDev(1x3))\n")
-        text_file.write("\n")
-        for stat in stats:
-            complete = np.concatenate((np.reshape(stat[0],(1,3)),np.reshape(stat[1],(1,3))), axis = 1)
-            with open(file_path + "statistics.txt" , "a") as text_file:
-                np.savetxt(text_file, complete,'%-7.4f')
+    for key in stats:
+        with open(file_path + key + "statistics.txt" , "w") as text_file:
+            text_file.write("Image after algorithm (Mean(1x3),StdDev(1x3))\n")
+            text_file.write("\n")
+            statistics = stats[key]
+            for stat in statistics:
+                complete = np.concatenate((np.reshape(stat[0],(1,3)),np.reshape(stat[1],(1,3))), axis = 1)
+                with open(file_path + key + "statistics.txt" , "a") as text_file:
+                    np.savetxt(text_file, complete,'%-7.4f')
 
 if __name__ == '__main__':
     colors = ['Red', 'Blue', 'Green']
