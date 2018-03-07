@@ -32,25 +32,31 @@ if __name__ == '__main__':
                'Retinex', 'RetinexGreyWorld', 'Stretch', 'GreyWorldStretch',
                'MaxWhite']
     cdh = color_shape_detector_handler.ColorShapeDetectorHandler('dataset')
-    results = []
+    #results = []
+    #for method in methods:
+    #    print method
+    #    file_path = os.path.dirname(os.path.abspath(__file__)) + "/results/" + method+ "/"
+    #    # create results parent directory
+    #    create_directory(file_path)
+    #    iterator = 0
+    #    for shape in shapes:
+    #        for color in colors:
+    #            # save histograms, images and statistics results
+    #            if iterator == 8:
+    #                cdh.detection_process(color, shape, method, file_path, 1)
+    #                write_statistics(file_path, cdh.results_statistics(color,
+    #                                                                   shape))
+    #            else:
+    #                cdh.detection_process(color, shape, method, file_path)
+    #            # write results
+    #            write_results(file_path,shape,color,
+    #                          cdh.results_per_color_number(color,shape),
+    #                          cdh.results_per_shape_number(color,shape))
+    #            iterator += 1
+    #            cdh.empty_results(color,shape)
+    file_path = os.path.dirname(os.path.abspath(__file__)) + "/results/" + \
+    'None'+ "/"
+    create_directory(file_path)
     for method in methods:
-        print method
-        file_path = os.path.dirname(os.path.abspath(__file__)) + "/results/" + method+ "/"
-        # create results parent directory
-        create_directory(file_path)
-        iterator = 0
-        for shape in shapes:
-            for color in colors:
-                # save histograms, images and statistics results
-                if iterator == 8:
-                    cdh.detection_process(color, shape, method, file_path, 1)
-                    write_statistics(file_path, cdh.results_statistics(color,
-                                                                       shape))
-                else:
-                    cdh.detection_process(color, shape, method, file_path)
-                # write results
-                write_results(file_path,shape,color,
-                              cdh.results_per_color_number(color,shape),
-                              cdh.results_per_shape_number(color,shape))
-                iterator += 1
-                cdh.empty_results(color,shape)
+        cdh.detection_process('Red', 'Circle', method, file_path, 1)
+    #write_statistics(file_path, cdh.results_statistics('Red','Circle'))

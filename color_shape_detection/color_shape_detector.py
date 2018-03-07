@@ -52,17 +52,20 @@ class ColorShapeDetector:
         # saving modified image
         cv2.imwrite(path_to_save + image_name, processed_image)
         # compute rgb histogram and save it
-        color = ('b', 'g', 'r')
+        print image_name
+        color = ('b')
         fig = plt.figure(1)
-        fig.text(0.5, 0.04, 'pixel value', ha='center')
-        fig.text(0.04, 0.5, 'number of pixels', va='center', rotation='vertical')
+        fig.text(0.5, 0.04, 'pixel value', ha='center',fontsize = 32)
+        fig.text(0.075, 0.5, 'number of pixels', va='center',
+                 rotation='vertical',fontsize = 32)
         for i, col in enumerate(color):
-            histr_processed = cv2.calcHist([processed_image],[i],None,[256],[0,256])
-            plt.plot(histr_processed,color = col)
+            histr_processed = cv2.calcHist([processed_image],[0],None,[256],[0,256])
+            plt.plot(histr_processed,color = col, linewidth = 3)
             plt.xlim([0,256])
-            plt.title(method)
-        plt.savefig(path_to_save + "histogram_" + image_name)
-        plt.close()
+            plt.title(method,fontsize = 50)
+        plt.show()
+        #plt.savefig(path_to_save + "histogram_" + image_name)
+        #plt.close()
 
     def opencv_to_pil(self,img):
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
@@ -175,55 +178,55 @@ class ColorShapeDetector:
 
         #convertion from rgb to hsv
         inImg_hsv = cv2.cvtColor(inImg_method, cv2.COLOR_BGR2HSV)
-
         if get_results == 1:
             # Calculate the statistics of the preprocessed image
-            self.include_results_statistics(inImg_hsv, image_name)
+            #self.include_results_statistics(inImg_hsv, image_name)
 
             #saving the processed image histogram
-            self.save_histograms_and_processed_image(inImg_method, image_name,
+            if image_name == 'blue_square_014.jpg':
+                self.save_histograms_and_processed_image(inImg_method, image_name,
                                                      path_to_save, method)
-        #appliying the color filter
-        if (self.color[0] == 'Red'):
-            mask1 = cv2.inRange(inImg_hsv,self.color[1][0][0],
-                                self.color[1][0][1])
-            mask2 = cv2.inRange(inImg_hsv,self.color[1][1][0],
-                                self.color[1][1][1])
-            mask = cv2.bitwise_or(mask1,mask2)
-        else:
-            mask = cv2.inRange(inImg_hsv,self.color[1][0], self.color[1][1])
+        ##appliying the color filter
+        #if (self.color[0] == 'Red'):
+        #    mask1 = cv2.inRange(inImg_hsv,self.color[1][0][0],
+        #                        self.color[1][0][1])
+        #    mask2 = cv2.inRange(inImg_hsv,self.color[1][1][0],
+        #                        self.color[1][1][1])
+        #    mask = cv2.bitwise_or(mask1,mask2)
+        #else:
+        #    mask = cv2.inRange(inImg_hsv,self.color[1][0], self.color[1][1])
 
-        #morphological transformation
-        mask_op = cv2.morphologyEx(mask, cv2.MORPH_OPEN, self.kernel_op)
-        mask_op_cl = cv2.morphologyEx(mask_op, cv2.MORPH_CLOSE, self.kernel_cl)
+        ##morphological transformation
+        #mask_op = cv2.morphologyEx(mask, cv2.MORPH_OPEN, self.kernel_op)
+        #mask_op_cl = cv2.morphologyEx(mask_op, cv2.MORPH_CLOSE, self.kernel_cl)
 
-        #removing the small objects from the binary image
-        contours,h = cv2.findContours(mask_op_cl,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-        mask_final = np.ones(mask_op_cl.shape[:2], dtype="uint8") * 255
-        area_ev = 0
-        iterator = 0
-        biggest_area_index = 0
+        ##removing the small objects from the binary image
+        #contours,h = cv2.findContours(mask_op_cl,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+        #mask_final = np.ones(mask_op_cl.shape[:2], dtype="uint8") * 255
+        #area_ev = 0
+        #iterator = 0
+        #biggest_area_index = 0
 
-        if contours:
-            for cnt in contours:
-                area = cv2.contourArea(cnt)
-                if (area > area_ev):
-                    area_ev = area
-                    biggest_area_index = iterator
-                    iterator = iterator + 1
+        #if contours:
+        #    for cnt in contours:
+        #        area = cv2.contourArea(cnt)
+        #        if (area > area_ev):
+        #            area_ev = area
+        #            biggest_area_index = iterator
+        #            iterator = iterator + 1
 
-            cnt =  contours[biggest_area_index]
-            cv2.drawContours(mask_final, [cnt], -1, 0, -1)
-            cv2.bitwise_not(mask_final,mask_final)
+        #    cnt =  contours[biggest_area_index]
+        #    cv2.drawContours(mask_final, [cnt], -1, 0, -1)
+        #    cv2.bitwise_not(mask_final,mask_final)
 
-            #check if the color filter succeed
-            if area_ev > 75:
-                self.include_possitive_color_image(inImg_dir)
-                #appliying the shape filter
-                if(self.shape[0] == 'Circle') :
-                    circles = cv2.HoughCircles(mask_final,cv2.cv.CV_HOUGH_GRADIENT,1,5,param1=20,param2=10,minRadius=5,maxRadius=0)
-                    if circles is not None:
-                        self.include_possitive_shape_image(inImg_dir)
-                else:
-                    if len(cv2.approxPolyDP(cnt,0.1*cv2.arcLength(cnt,True),True)) == self.shape[1]:
-                        self.include_possitive_shape_image(inImg_dir)
+        #    #check if the color filter succeed
+        #    if area_ev > 75:
+        #        self.include_possitive_color_image(inImg_dir)
+        #        #appliying the shape filter
+        #        if(self.shape[0] == 'Circle') :
+        #            circles = cv2.HoughCircles(mask_final,cv2.cv.CV_HOUGH_GRADIENT,1,5,param1=20,param2=10,minRadius=5,maxRadius=0)
+        #            if circles is not None:
+        #                self.include_possitive_shape_image(inImg_dir)
+        #        else:
+        #            if len(cv2.approxPolyDP(cnt,0.1*cv2.arcLength(cnt,True),True)) == self.shape[1]:
+        #                self.include_possitive_shape_image(inImg_dir)
