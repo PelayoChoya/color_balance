@@ -32,6 +32,8 @@ class ColorShapeDetector:
         self.kernel_cl = np.ones((5,5),np.uint8)
         self.possitive_color_images = []
         self.possitive_shape_images = []
+        self.negative_color_images = []
+        self.negative_shape_images = []
         self.results_statistics = {'Blue' : [], 'Red':[], 'Green':[]}
 
     def method(self, method, img):
@@ -144,14 +146,22 @@ class ColorShapeDetector:
     def empty_list(self):
         del self.possitive_color_images[:]
         del self.possitive_shape_images[:]
+        del self.negative_color_images[:]
+        del self.negative_shape_images[:]
         for key in self.results_statistics:
             del self.results_statistics[key][:]
 
     def include_possitive_color_image(self,img):
         self.possitive_color_images.append(img)
 
+    def include_negative_color_image(self,img):
+        self.negative_color_images.append(img)
+
     def include_possitive_shape_image(self,img):
         self.possitive_shape_images.append(img)
+
+    def include_negative_shape_image(self,img):
+        self.negative_shape_images.append(img)
 
     def include_results_statistics (self, img_to_stat,image_name):
         if 'red' in image_name:
@@ -224,6 +234,12 @@ class ColorShapeDetector:
                     circles = cv2.HoughCircles(mask_final,cv2.cv.CV_HOUGH_GRADIENT,1,5,param1=20,param2=10,minRadius=5,maxRadius=0)
                     if circles is not None:
                         self.include_possitive_shape_image(inImg_dir)
+                    else:
+                        self.include_negative_shape_image(inImg_dir)
                 else:
                     if len(cv2.approxPolyDP(cnt,0.1*cv2.arcLength(cnt,True),True)) == self.shape[1]:
                         self.include_possitive_shape_image(inImg_dir)
+                    else:
+                        self.include_negative_shape_image(inImg_dir)
+            else:
+                self.include_negative_color_image(inImg_dir)

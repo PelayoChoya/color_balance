@@ -43,9 +43,9 @@ if __name__ == '__main__':
             for color in colors:
                 # save histograms, images and statistics results
                 if iterator == 8:
-                    cdh.detection_process(color, shape, method, file_path, 1)
-                    write_statistics(file_path, cdh.results_statistics(color,
-                                                                       shape))
+                    cdh.detection_process(color, shape, method, file_path, 0)
+                    #write_statistics(file_path, cdh.results_statistics(color,
+                    #                                                   shape))
                 else:
                     cdh.detection_process(color, shape, method, file_path)
                 # write results
