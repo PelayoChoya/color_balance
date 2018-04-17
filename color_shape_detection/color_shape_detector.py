@@ -53,19 +53,19 @@ class ColorShapeDetector:
         cv2.imwrite(path_to_save + image_name, processed_image)
         # compute rgb histogram and save it
         print image_name
-        color = ('b')
-        fig = plt.figure(1)
-        fig.text(0.5, 0.04, 'pixel value', ha='center',fontsize = 32)
-        fig.text(0.075, 0.5, 'number of pixels', va='center',
-                 rotation='vertical',fontsize = 32)
+        color = ('b','g','r')
         for i, col in enumerate(color):
-            histr_processed = cv2.calcHist([processed_image],[0],None,[256],[0,256])
+            fig = plt.figure(1)
+            fig.text(0.5, 0.005, 'pixel value', ha='center',fontsize = 20)
+            fig.text(0.005, 0.5, 'number of pixels', va='center',
+                     rotation='vertical',fontsize = 20)
+            histr_processed = cv2.calcHist([processed_image],[i],None,[256],[0,256])
             plt.plot(histr_processed,color = col, linewidth = 3)
             plt.xlim([0,256])
-            plt.title(method,fontsize = 50)
-        plt.show()
-        #plt.savefig(path_to_save + "histogram_" + image_name)
-        #plt.close()
+            plt.title(method,fontsize = 36)
+        #plt.show()
+            plt.savefig(path_to_save+ col + '_' + "histogram_" + method +'.png')
+            plt.close()
 
     def opencv_to_pil(self,img):
         img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
